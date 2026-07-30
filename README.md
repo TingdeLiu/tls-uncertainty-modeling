@@ -1,11 +1,11 @@
-# UMOSLS-DL
+# TLS Uncertainty Modeling
 
 **Uncertainty modelling of static terrestrial laser scanning using deep learning**
 
-UMOSLS-DL is a research codebase for estimating point-wise range residuals in
-static terrestrial laser scanning (TLS). The proposed Regression PointNet
-(RePN) combines multi-scale local geometric features with physically derived
-scanner features to predict measurement uncertainty.
+TLS Uncertainty Modeling is a research codebase for estimating point-wise range
+residuals in static terrestrial laser scanning (TLS). The proposed Regression
+PointNet (RePN) combines multi-scale local geometric features with physically
+derived scanner features to predict measurement uncertainty.
 
 The project was developed at the Geodetic Institute, Leibniz University
 Hannover, using measurements from a Z+F IMAGER 5016.
@@ -36,11 +36,12 @@ which are not distributed in this repository.
 ## Repository layout
 
 ```text
-UMOSLS-DL/
+tls-uncertainty-modeling/
 ├── configs/                 Example experiment configuration
 ├── docs/                    Data and reproducibility documentation
 ├── notebooks/legacy/       Original exploratory training notebook
-├── src/umosls_dl/           Reusable model, data, and training code
+├── src/tls_uncertainty_modeling/
+│                            Reusable model, data, and training code
 ├── tests/                   Lightweight unit tests
 ├── CITATION.cff             Citation metadata
 └── pyproject.toml           Package and dependency metadata
@@ -51,8 +52,8 @@ UMOSLS-DL/
 Python 3.10 or newer is recommended.
 
 ```bash
-git clone git@github.com:TingdeLiu/UMOSLS-DL.git
-cd UMOSLS-DL
+git clone git@github.com:TingdeLiu/tls-uncertainty-modeling.git
+cd tls-uncertainty-modeling
 
 python -m venv .venv
 # Windows PowerShell
@@ -87,7 +88,7 @@ neighbourhoods, model checkpoints, or prediction files.
 ```python
 import torch
 
-from umosls_dl.model import RePN
+from tls_uncertainty_modeling.model import RePN
 
 model = RePN(
     samples_per_scale=(16, 32, 128),

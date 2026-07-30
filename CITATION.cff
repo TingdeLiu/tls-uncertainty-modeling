@@ -1,12 +1,12 @@
 cff-version: 1.2.0
 message: "If you use this software in your research, please cite the study below."
-title: "UMOSLS-DL: Uncertainty Modelling of Static Laser Scanning Using Deep Learning"
+title: "TLS Uncertainty Modeling"
 type: software
 authors:
   - family-names: Liu
     given-names: Tingde
     email: tingde.liu.luh@gmail.com
-repository-code: "https://github.com/TingdeLiu/UMOSLS-DL"
+repository-code: "https://github.com/TingdeLiu/tls-uncertainty-modeling"
 version: 0.1.0
 preferred-citation:
   type: thesis

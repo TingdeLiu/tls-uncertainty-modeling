@@ -1,6 +1,6 @@
 # Contributing
 
-Thank you for your interest in UMOSLS-DL.
+Thank you for your interest in TLS Uncertainty Modeling.
 
 ## Before opening a change
 
