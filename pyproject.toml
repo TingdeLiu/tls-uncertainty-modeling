@@ -3,7 +3,7 @@ requires = ["setuptools>=68"]
 build-backend = "setuptools.build_meta"
 
 [project]
-name = "umosls-dl"
+name = "tls-uncertainty-modeling"
 version = "0.1.0"
 description = "Deep-learning uncertainty modelling for static terrestrial laser scanning"
 readme = "README.md"
@@ -16,7 +16,7 @@ keywords = [
   "point-cloud",
   "pointnet",
   "terrestrial-laser-scanning",
-  "uncertainty-modelling",
+  "uncertainty-modeling",
 ]
 classifiers = [
   "Development Status :: 3 - Alpha",
@@ -48,8 +48,8 @@ dev = [
 ]
 
 [project.urls]
-Homepage = "https://github.com/TingdeLiu/UMOSLS-DL"
-Repository = "https://github.com/TingdeLiu/UMOSLS-DL"
+Homepage = "https://github.com/TingdeLiu/tls-uncertainty-modeling"
+Repository = "https://github.com/TingdeLiu/tls-uncertainty-modeling"
 
 [tool.setuptools.packages.find]
 where = ["src"]

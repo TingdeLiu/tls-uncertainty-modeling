@@ -1,7 +1,7 @@
 import pytest
 
 torch = pytest.importorskip("torch")
-RePN = pytest.importorskip("umosls_dl.model").RePN
+RePN = pytest.importorskip("tls_uncertainty_modeling.model").RePN
 
 
 def test_repn_output_shape():

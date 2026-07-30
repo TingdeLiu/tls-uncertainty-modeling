@@ -6,7 +6,7 @@ notebook-global variables, and saved outputs.
 
 For new work:
 
-- use the modules under `src/umosls_dl/`;
+- use the modules under `src/tls_uncertainty_modeling/`;
 - keep data paths relative to the repository or pass them as parameters;
 - restart the kernel and run all cells before publishing a notebook;
 - clear large outputs and avoid committing checkpoints or datasets.

@@ -1,7 +1,7 @@
 import numpy as np
 import pytest
 
-from umosls_dl.preprocessing import normalize_point_cloud
+from tls_uncertainty_modeling.preprocessing import normalize_point_cloud
 
 
 def test_normalize_point_cloud_centres_and_scales_points():
