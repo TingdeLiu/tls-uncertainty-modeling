@@ -1,0 +1,19 @@
+cff-version: 1.2.0
+message: "If you use this software in your research, please cite the study below."
+title: "UMOSLS-DL: Uncertainty Modelling of Static Laser Scanning Using Deep Learning"
+type: software
+authors:
+  - family-names: Liu
+    given-names: Tingde
+    email: tingde.liu.luh@gmail.com
+repository-code: "https://github.com/TingdeLiu/UMOSLS-DL"
+version: 0.1.0
+preferred-citation:
+  type: thesis
+  title: "Uncertainty modelling of static laser scanning using deep learning"
+  authors:
+    - family-names: Liu
+      given-names: Tingde
+  institution:
+    name: "Leibniz University Hannover"
+  year: 2023

@@ -1,126 +1,138 @@
-<p align="center">
-<h1 align="center"><strong>Uncertainty Modelling of Static Laser Scanning Using Deep Learning</strong></h1>
-  <p align="center">
-    <a href='https://github.com/TingdeLiu/' target='_blank'>Tingde Liu, M. Sc.</a>&emsp;
-    <a href='https://www.gih.uni-hannover.de/de/janhartmann/' target='_blank'>Jan Hartmann, M. Sc.</a>&emsp;
-    <br>
-    Geodätisches Institut Hannover, Leibniz Universität Hannover
-  </p>
-</p>
+# UMOSLS-DL
 
+**Uncertainty modelling of static terrestrial laser scanning using deep learning**
 
----
+UMOSLS-DL is a research codebase for estimating point-wise range residuals in
+static terrestrial laser scanning (TLS). The proposed Regression PointNet
+(RePN) combines multi-scale local geometric features with physically derived
+scanner features to predict measurement uncertainty.
 
-## 🧠 About
+The project was developed at the Geodetic Institute, Leibniz University
+Hannover, using measurements from a Z+F IMAGER 5016.
 
-This project investigates **uncertainty modelling in static terrestrial laser scanning (TLS)** using deep learning. We propose a novel neural network architecture called **RePN**, which integrates **PointNet++** for local feature extraction and a **multilayer perceptron** (MLP) for regression. The model predicts the **range residual** (uncertainty) of TLS point cloud measurements using both **geometric** and **physically-derived features**.
+## Highlights
 
-The dataset was collected using a **Z+F Imager 5016** laser scanner in a controlled lab environment, with over **2.5 million points** scanned from multiple positions.
+- RePN: a PointNet-inspired multi-scale regression network.
+- Joint use of local XYZ geometry and scanner-derived features.
+- Five-fold cross-validation with checkpointing and early stopping.
+- Comparison against a fully connected baseline and XGBoost.
+- Calibration of TLS range residuals at point level.
 
----
+## Reported results
 
-## 🔍 Key Features
+The original experiment used 2,534,160 measurements from a controlled
+laboratory setup.
 
-- 📌 **RePN**: Combines PointNet++ with MLP for residual regression.
-- 📌 **ReFC**: A baseline fully connected neural network model.
-- 📌 **Point-level features**: Intensity, incidence angle, range, spot size, sigma distance.
-- 📌 **Geometric grouping** using **KD-tree** and **Farthest Point Sampling (FPS)**.
-- 📌 **Multi-Scale Grouping (MSG)** for robust feature aggregation.
-- 📌 Comparison with **XGBoost** baseline.
-- 📈 Metrics: R² score, RMSE, and distance calibration improvements.
+| Metric | Reported outcome |
+| --- | ---: |
+| Mean residual before calibration | 0.387 mm |
+| Mean residual after calibration | 0.009 mm |
+| Standard-deviation reduction | 49% |
 
----
+These values are results reported by the original study. Reproducing them
+requires the research dataset and the precomputed point-neighbourhood files,
+which are not distributed in this repository.
 
-## 🧱 Model Architecture
+## Repository layout
 
-### RePN: PointNet++ Enhanced Regression Network
+```text
+UMOSLS-DL/
+├── configs/                 Example experiment configuration
+├── docs/                    Data and reproducibility documentation
+├── notebooks/legacy/       Original exploratory training notebook
+├── src/umosls_dl/           Reusable model, data, and training code
+├── tests/                   Lightweight unit tests
+├── CITATION.cff             Citation metadata
+└── pyproject.toml           Package and dependency metadata
+```
 
-<p align="center">
-  <img src="https://github.com/TingdeLiu/Uncertainty-modelling-of-static-laser-scanning-using-DL/assets/117039110/bdabb067-2ca9-4a4a-8bfb-c1afb44d165e" width="75%">
-</p>
+## Installation
 
-- **Input**: n × (XYZ + 4 features)
-- **Grouping**: Local grouping using KD-tree (r = 0.1)
-- **Sampling**: 128 samples per group (FPS)
-- **MSG**: Radius = [0.035, 0.07, 0.1]; Samples = [16, 64, 128]
-- **Feature Aggregation**: MLP → MaxPooling → Concat → MLP regression
+Python 3.10 or newer is recommended.
 
----
+```bash
+git clone git@github.com:TingdeLiu/UMOSLS-DL.git
+cd UMOSLS-DL
 
-## 📊 Results
+python -m venv .venv
+# Windows PowerShell
+.\.venv\Scripts\Activate.ps1
+# Linux/macOS
+# source .venv/bin/activate
 
-### 🔹 RePN vs XGBoost
+python -m pip install --upgrade pip
+python -m pip install -e ".[notebook]"
+```
 
-<p align="center">
-  <img src="https://github.com/TingdeLiu/Uncertainty-modelling-of-static-laser-scanning-using-DL/assets/117039110/dc81c2ac-3dfd-4c7d-a543-18cd5680a320" width="70%">
-</p>
+PyTorch installation varies by operating system and CUDA version. If the
+default package is not suitable for your GPU, install the appropriate PyTorch
+build first and then install this project.
 
-- ✅ **Higher R² score**
-- ✅ **Lower RMSE**
-- ✅ **More robust generalization**
+## Data preparation
 
-### 🔹 Residual Calibration
+The original pipeline expects:
 
-- Pre-calibration mean: **0.387 mm**
-- Post-calibration mean: **0.009 mm**
-- Standard deviation reduced by **49%**
+1. A PLY file containing XYZ coordinates, scan identifiers, physical features,
+   and the target range residual.
+2. Precomputed `Group_<scan_id>.npy` files containing local XYZ
+   neighbourhoods aligned with the filtered PLY records.
 
----
+See [docs/DATA.md](docs/DATA.md) for the schema and
+[docs/REPRODUCIBILITY.md](docs/REPRODUCIBILITY.md) for the current
+reproducibility status. Do not commit raw measurements, generated
+neighbourhoods, model checkpoints, or prediction files.
 
-## 📂 Dataset Description
+## Python API
 
-| Attribute           | Value                   |
-|---------------------|--------------------------|
-| Scanner             | Z+F Imager 5016          |
-| Location            | HiTec Lab, LUH           |
-| Target              | 3D printed planar surface |
-| Points              | 2,534,160                |
-| Format              | n × 9 (XYZ + 6 features) |
+```python
+import torch
 
----
+from umosls_dl.model import RePN
 
-## ⚙️ Training Setup
+model = RePN(
+    samples_per_scale=(16, 32, 128),
+    mlp_channels=((32, 32, 64), (64, 64, 128), (64, 96, 128)),
+    physical_feature_count=4,
+)
 
-- Programming Language: Python 3.10
-- Frameworks: PyTorch, NumPy, Scikit-learn
-- Validation: Holdout + K-Fold Cross Validation
-- Optimization: Grid Search (batch size, learning rate)
+xyz_neighbourhoods = torch.randn(8, 128, 3)
+physical_features = torch.randn(8, 4)
+predicted_residuals = model(xyz_neighbourhoods, physical_features)
+print(predicted_residuals.shape)  # torch.Size([8, 1])
+```
 
----
+The reusable package removes notebook-global state and validates tensor shapes.
+The original notebook is retained as a historical experiment record in
+`notebooks/legacy/`.
 
-## 🧪 How to Use
+## Development
 
-1. Clone this repo:
-   ```bash
-   git clone https://github.com/TingdeLiu/Uncertainty-modelling-of-static-laser-scanning-using-DL.git
-   cd Uncertainty-modelling-of-static-laser-scanning-using-DL
+```bash
+python -m pip install -e ".[dev]"
+pytest
+ruff check .
+```
 
-## 📖 Reference
+## Citation
 
-If you use this project in your work, please cite:
+If this work supports your research, please cite:
 
-> Liu, T. (2023). _Uncertainty modelling of static laser scanning using deep learning_. Studienarbeit, Leibniz Universität Hannover.
+> Liu, T. (2023). *Uncertainty modelling of static laser scanning using deep
+> learning*. Studienarbeit, Leibniz University Hannover.
 
----
+Machine-readable metadata is provided in [CITATION.cff](CITATION.cff).
 
-## 📬 Contact
+## Acknowledgements
 
-For questions or collaborations, feel free to contact:
+- Supervision: Jan Hartmann and PD Dr.-Ing. Hamza Alkhatib
+- Institute: Geodetic Institute, Leibniz University Hannover
+- Dataset and laboratory support: HiTec Lab, IKG
 
-**Tingde Liu**  
-📧 [tingde.liu.luh@gmail.com](mailto:tingde.liu.luh@gmail.com)  
-🌐 [GitHub Profile](https://github.com/TingdeLiu)
+## Contact and license
 
----
+For questions or collaboration, contact
+[Tingde Liu](mailto:tingde.liu.luh@gmail.com).
 
-## 📎 Acknowledgements
-
-- Supervision: Jan Hartmann, M. Sc. & PD Dr.-Ing. Hamza Alkhatib  
-- Institute: Geodätisches Institut, Leibniz Universität Hannover  
-- Dataset & Support: HiTec Lab, IKG
-
----
-
-<p align="center">
-  <i>“The key to precision is understanding uncertainty.”</i>
-</p>
+No software license has been declared yet. Until a license is added, the source
+code remains protected by copyright and should not be redistributed or reused
+without permission from the author.
